@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpotSkill — Discover Nearby Skilled Workers</title>
+  <meta name="description" content="Find nearby skilled workers like electricians, plumbers, cobblers, babysitters, and street food vendors. Crowdsourced, real-time, location-based discovery." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="/" class="header__logo">
+        <span class="header__logo-icon">📍</span>
+        <span class="header__logo-text">Spot<span class="accent">Skill</span></span>
+      </a>
+      <button class="btn btn--primary btn--glow" id="btn-add-worker">
+        <span class="btn__icon">＋</span>
+        Add Worker
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="hero">
+    <div class="hero__bg-shapes">
+      <div class="hero__shape hero__shape--1"></div>
+      <div class="hero__shape hero__shape--2"></div>
+      <div class="hero__shape hero__shape--3"></div>
+    </div>
+    <div class="container hero__content">
+      <h1 class="hero__title">
+        Discover <span class="gradient-text">Skilled Workers</span><br />Near You
+      </h1>
+      <p class="hero__subtitle">
+        Find nearby cobblers, electricians, plumbers, babysitters &amp; street food vendors — crowdsourced by your community.
+      </p>
+      <div class="hero__actions">
+        <button class="btn btn--accent btn--lg btn--glow" id="btn-detect-location">
+          <span class="btn__icon">📍</span>
+          Detect My Location
+        </button>
+        <div class="hero__manual-location" id="manual-location-area" style="display:none;">
+          <input type="text" class="input" id="input-manual-location" placeholder="Enter your city or area..." />
+          <button class="btn btn--outline btn--sm" id="btn-manual-search">Search</button>
+        </div>
+      </div>
+      <p class="hero__location-status" id="location-status"></p>
+    </div>
+  </section>
+
+  <!-- ========== FILTERS ========== -->
+  <section class="filters-section" id="filters-section">
+    <div class="container">
+      <div class="filters" id="category-filters">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="sort-bar">
+        <label class="sort-bar__label">Sort by:</label>
+        <select class="select" id="sort-select">
+          <option value="distance">Distance (nearest)</option>
+          <option value="rating">Rating (highest)</option>
+          <option value="newest">Newest first</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WORKER GRID ========== -->
+  <main class="main" id="main">
+    <div class="container">
+      <div class="workers-grid" id="workers-grid">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <div class="empty-state__icon">🔍</div>
+        <h3 class="empty-state__title">No workers found</h3>
+        <p class="empty-state__text">Try a different category or add a new worker to help your community!</p>
+      </div>
+      <div class="loading-state" id="loading-state">
+        <div class="spinner"></div>
+        <p>Loading workers...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== WORKER DETAIL MODAL ========== -->
+  <div class="modal-overlay" id="modal-worker-detail">
+    <div class="modal modal--detail">
+      <button class="modal__close" id="btn-close-detail">&times;</button>
+      <div class="modal__body" id="modal-detail-body">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== ADD WORKER MODAL ========== -->
+  <div class="modal-overlay" id="modal-add-worker">
+    <div class="modal modal--form">
+      <button class="modal__close" id="btn-close-add-worker">&times;</button>
+      <h2 class="modal__title">Add a Worker</h2>
+      <p class="modal__subtitle">Help your community by listing a skilled worker you know.</p>
+      <form class="form" id="form-add-worker">
+        <div class="form__group">
+          <label class="form__label" for="worker-image">Photo</label>
+          <div class="image-upload" id="image-upload-area">
+            <input type="file" id="worker-image" accept="image/*" class="image-upload__input" />
+            <div class="image-upload__placeholder" id="image-upload-placeholder">
+              <span class="image-upload__icon">📷</span>
+              <span>Click or drag to upload</span>
+            </div>
+            <img class="image-upload__preview" id="image-preview" style="display:none;" alt="Preview" />
+          </div>
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="worker-name">Name / Title *</label>
+          <input type="text" class="input" id="worker-name" placeholder="e.g. Raju the Cobbler" required />
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="worker-category">Category *</label>
+          <select class="select" id="worker-category" required>
+            <option value="">Select a category</option>
+            <option value="cobbler">🥾 Cobbler</option>
+            <option value="electrician">⚡ Electrician</option>
+            <option value="plumber">🔧 Plumber</option>
+            <option value="babysitter">👶 Babysitter</option>
+            <option value="street_food">🍜 Street Food Vendor</option>
+          </select>
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="worker-description">Description (optional)</label>
+          <textarea class="input textarea" id="worker-description" rows="3" placeholder="Describe their speciality..."></textarea>
+        </div>
+        <div class="form__group">
+          <label class="form__label" for="worker-contact">Contact (optional)</label>
+          <input type="text" class="input" id="worker-contact" placeholder="Phone number or other info" />
+        </div>
+        <div class="form__group">
+          <label class="form__label">Location</label>
+          <p class="form__hint" id="worker-location-hint">Will use your current location automatically</p>
+          <input type="hidden" id="worker-lat" />
+          <input type="hidden" id="worker-lng" />
+        </div>
+        <button type="submit" class="btn btn--primary btn--lg btn--full btn--glow" id="btn-submit-worker">
+          Add Worker
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>SpotSkill — Crowdsourced worker discovery for your community.</p>
+      <p class="footer__sub">No login required • Open for everyone</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
